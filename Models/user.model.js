@@ -15,6 +15,9 @@ const userSchema = new mongoose.Schema({
     required: true,
     min: 5
   },
+  telephone:{
+    type:Number,
+  },
 },{timestamps: true}
 )
 module.exports = mongoose.model('User',userSchema)
