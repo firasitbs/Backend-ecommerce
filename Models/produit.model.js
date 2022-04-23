@@ -20,15 +20,13 @@ const produitSchema = new mongoose.Schema({
     PriceAf:{
         type:Number,
     },
-    Image:{
-        type:String,
-    },
     Categorie:{
         type:String,
     },
     Nbstock:{
         type:Number,
     },
+    productImage:{type:String},
 },{timestamps: true}
 )
 module.exports = mongoose.model('Produit',produitSchema)

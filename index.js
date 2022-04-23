@@ -14,6 +14,7 @@ app.use(cors({
 
 
 //Routes
+app.use('/uploads',express.static('uploads'));
 app.use(bodyparser.json())
 app.get('/', function(req,res){
   res.send('Hello world')
@@ -28,6 +29,8 @@ mongoose.connection.once('open',function(){
 
 app.use('/account/api',router)
 require('./Routes/produit.route')(app);
+require('./Routes/Orders.route')(app);
+
 //Server 
 app.listen('8000',function(req,res){
   console.log('Serve is up and running at the port 8000')
