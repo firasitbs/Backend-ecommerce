@@ -1,7 +1,7 @@
 const Order=require("../Models/Order.model");
 const Product=require("../Models/produit.model")
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     const newOrder = new Order(req.body);
     try {
       const savedOrder = await newOrder.save();
@@ -10,7 +10,7 @@ exports.create = (req, res) => {
       res.status(500).json(err);
     }
 };
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     try {
       const updatedOrder = await Order.findByIdAndUpdate(
         req.params.id,
@@ -25,7 +25,7 @@ exports.update = (req, res) => {
     }
   };
 
-exports.delete=(req,res)=>{
+exports.delete= async (req,res)=>{
     try {
         await Order.findByIdAndDelete(req.params.id);
         res.status(200).json("Order has been deleted...");
@@ -33,7 +33,7 @@ exports.delete=(req,res)=>{
         res.status(500).json(err);
     }
 }
-exports.getuserorders=(req,res)=>{
+exports.getuserorders= async (req,res)=>{
     try {
         const orders = await Order.find({ userId: req.params.userId });
         res.status(200).json(orders);
@@ -42,7 +42,7 @@ exports.getuserorders=(req,res)=>{
     }
 }
 
-exports.getallorders=(req,res)=>{
+exports.getallorders= async (req,res)=>{
     try {
         const orders = await Order.find();
         res.status(200).json(orders);
@@ -51,10 +51,64 @@ exports.getallorders=(req,res)=>{
     }
 }
 
-exports.paymentorders=(req,res)=>{
+exports.paymentorders= async (req,res)=>{
     try{
-         
+      array=req.body.products;
+      for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        for (let indeY = 0; indeY < Product.length; indeY++) {
+          const elementO = Product[indeY];
+          if(element.productId==elementO.productId){
+            if(elementO.Nbstock==0){
+              Product.findByIdAndRemove(req.params.productId).then((data) => {
+                if (!data) {
+                  return res.status(404).send({
+                      message: "produit not found with id " + req.params.productId,
+                  });
+                }
+                res.send({ message: "produit deleted successfully!" });
+            })
+            .catch((err) => {
+            if (err.kind === "ObjectId" || err.name === "NotFound") {
+                return res.status(404).send({
+                    message: "produit not found with id " + req.params.productId,
+                });
+            }
+            return res.status(500).send({
+                message: "Could not delete message with id " + req.params.produtcId,
+            });
+        });
+            }
+            else{
+              const Product = new Product({
+                _id: req.params.id,
+                title: req.body.title,
+                description: req.body.description,
+                imageUrl: req.body.imageUrl,
+                price: req.body.price,
+                Nbstock: req.body.userId
+              });
+              Product.updateOne({_id: req.params.id}, thing).then(
+                () => {
+                  res.status(201).json({
+                    message: 'Thing updated successfully!'
+                  });
+                }
+              ).catch(
+                (error) => {
+                  res.status(400).json({
+                    error: error
+                  });
+                }
+              );
+            }
+          }
+          
+        }
+        
+        
+      }   
     }catch(err){
-        res.status(500).json(err);
+      res.status(500).json(err);
     }
 }
