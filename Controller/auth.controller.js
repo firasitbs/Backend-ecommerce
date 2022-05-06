@@ -1,9 +1,8 @@
 const User = require('../Models/user.model')
 const bycrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
-
 async function signup(req, res, next) {
-
+    
     const emailExist = await User.findOne({ email: req.body.email })
     if (emailExist) {
         res.status(400).json({ "error": 'Email already Exist' })
@@ -38,6 +37,8 @@ async function signup(req, res, next) {
         res.send(400).send(err)
     }
 }
+  
+
 module.exports = {
     signup,
 }
